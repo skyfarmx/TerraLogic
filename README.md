@@ -183,7 +183,7 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 ## 📬 İletişim
 
-Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@terralogic.com) ve [Altug Tatlisu](mailto:altug.tatlisu@terralogic.com)
+Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@terralogic.ai) ve [Altug Tatlisu](mailto:altug.tatlisu@terralogic.com)
 
 Proje Sayfası: [https://www.terralogic.com](https://www.terralogic.ai)
 
