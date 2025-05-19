@@ -143,7 +143,7 @@ Terra Logic API'si, diğer sistemlerle entegrasyon için RESTful bir arayüz sun
 import requests
 
 # Görüntü analizi için örnek API çağrısı
-url = "https://api.terralogic.com/v1/analyze"
+url = "https://api.terralogic.ai/v1/analyze"
 files = {"image": open("field_image.jpg", "rb")}
 response = requests.post(url, files=files)
 
@@ -153,7 +153,7 @@ print(results)
 
 ## 📚 API Dokümantasyonu
 
-API dokümantasyonuna [https://docs.terralogic.com](https://docs.terralogic.com) adresinden erişebilir veya sunucu çalışırken `http://localhost:8000/api/docs/` adresini ziyaret edebilirsiniz.
+API dokümantasyonuna [https://docs.terralogic.ai](https://docs.terralogic.ai) adresinden erişebilir veya sunucu çalışırken `http://localhost:8000/api/docs/` adresini ziyaret edebilirsiniz.
 
 ### Temel Endpoints
 
@@ -185,7 +185,7 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@terralogic.ai) ve [Altug Tatlisu](mailto:altug.tatlisu@terralogic.ai)
 
-Proje Sayfası: [https://www.terralogic.com](https://www.terralogic.ai)
+Proje Sayfası: [https://www.terralogic.ai](https://www.terralogic.ai)
 
 ---
 
