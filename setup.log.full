@@ -1,0 +1,49 @@
+2025/05/02 17:49:03 Starting OSGeo4W install, version 2.579
+2025/05/02 17:49:03 using locales .1252
+2025/05/02 17:49:03 Current Directory: C:\Farm
+2025/05/02 17:49:03 Root Directory: C:\OSGeo4W
+Could not open Service control manager
+2025/05/02 17:49:21 source: download
+2025/05/02 17:49:25 Selected local directory: C:\Farm
+2025/05/02 17:49:25 Menu name: OSGeo4W
+2025/05/02 17:49:29 net: Preconfig
+Loaded cached mirror list
+get_url_to_membuf https://download.osgeo.org/osgeo4w/ssl/mirrors.lst
+getUrlToStream https://download.osgeo.org/osgeo4w/ssl/mirrors.lst
+User-Agent: default is "OSGeo4W-Setup/2.579 (Windows NT 6.2.9200;Win64;0409)"
+Request for URL https://download.osgeo.org/osgeo4w/ssl/mirrors.lst satisfied from cache
+2025/05/02 17:49:32 site: https://download.osgeo.org/osgeo4w/v2/
+get_url_to_membuf https://download.osgeo.org/osgeo4w/v2/x86_64/setup.ini.bz2
+getUrlToStream https://download.osgeo.org/osgeo4w/v2/x86_64/setup.ini.bz2
+Request for URL https://download.osgeo.org/osgeo4w/v2/x86_64/setup.ini.bz2 satisfied from cache
+ The package <gdal-dev-ecw-3.11.0-785-fedd1eef71-1> has a non-free license it was successfully added 
+ The package <gdal-dev-ecw-3.11.0-784-7f3406edd9-1> has a non-free license it was successfully added 
+ The package <gdal-dev-filegdb-3.11.0-785-fedd1eef71-1> has a non-free license it was successfully added 
+ The package <gdal-dev-filegdb-3.11.0-784-7f3406edd9-1> has a non-free license it was successfully added 
+ The package <gdal-dev-mrsid-3.11.0-785-fedd1eef71-1> has a non-free license it was successfully added 
+ The package <gdal-dev-mrsid-3.11.0-784-7f3406edd9-1> has a non-free license it was successfully added 
+ The package <gdal-ecw-3.10.3-2> has a non-free license it was successfully added 
+ The package <gdal-ecw-3.10.3-1> has a non-free license it was successfully added 
+ The package <gdal-filegdb-3.10.3-2> has a non-free license it was successfully added 
+ The package <gdal-filegdb-3.10.3-1> has a non-free license it was successfully added 
+ The package <gdal-mrsid-3.10.3-2> has a non-free license it was successfully added 
+ The package <gdal-mrsid-3.10.3-1> has a non-free license it was successfully added 
+ The package <hdf5-1.14.0-1> has a non-free license it was successfully added 
+ The package <hdf5-devel-1.14.0-1> has a non-free license it was successfully added 
+ The package <hdf5-tools-1.14.0-1> has a non-free license it was successfully added 
+ The package <libarchive-3.7.8-1> has a non-free license it was successfully added 
+ The package <msodbcsql-devel-18.0-2> has a non-free license it was successfully added 
+ The package <msodbcsql-devel-18.0-1> has a non-free license it was successfully added 
+ The package <muparser-2.3.5-1> has a non-free license it was successfully added 
+ The package <muparser-devel-2.3.5-1> has a non-free license it was successfully added 
+ The package <oci-21.13-1> has a non-free license it was successfully added 
+ The package <oci-19.11-1> has a non-free license it was successfully added 
+ The package <oci-devel-21.13-1> has a non-free license it was successfully added 
+ The package <oci-devel-19.11-1> has a non-free license it was successfully added 
+ The package <qtwebdav-qt6-2.1-1> has a non-free license it was successfully added 
+ The package <szip-2.1.1-4> has a non-free license it was successfully added 
+ The package <szip-2.1.1-3> has a non-free license it was successfully added 
+ The package <szip-devel-2.1.1-4> has a non-free license it was successfully added 
+ The package <szip-devel-2.1.1-3> has a non-free license it was successfully added 
+2025/05/02 17:49:54 note: Download Complete
+2025/05/02 17:49:54 Ending OSGeo4W install

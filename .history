@@ -1,0 +1,30 @@
+sudo apt update
+38  sudo apt install python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
+39  mkdir myprojectdir
+40  cd myprojectdir/
+41  python3 -m venv myprojectenv
+42  python3 -m venv myprojectdir
+43  cd ..
+44  pwd
+45  python3 -m venv myprojectenv
+46  source myprojectenv/bin/activate
+47  cd yolowebapp2/
+48  pip install -r requirements.txt 
+49  sudo apt-get install -y libgdal-dev gdal-bin
+50  pip install -r requirements.txt 
+51  sudo apt install gdal-bin python3-gdal
+52  sudo apt-get install libgdal-dev gdal-config
+53  sudo apt-get install -y libgdal-dev gdal-bin python3-gdal
+54  sudo apt-get install build-essential
+55  sudo apt install libpq-dev gdal-bin libgdal-dev
+56  pip install -r requirements.txt 
+57  clear
+58  python3 manage.py runserver
+59  python3 manage.py runserver 0.0.0.0:7000
+60  pwd
+61  python3 manage.py runserver 0.0.0.0:7000
+62  pip install gunicorn torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
+63  python3 manage.py runserver 0.0.0.0:7000
+64  python3
+65  python3 manage.py runserver 0.0.0.0:7000
+66  pip install 'numpy<2'
