@@ -1,7 +1,7 @@
-# Tarim Analiz
+# Tarım Analiz
 
 <div align="center">
-  <h1>🌱 TARIM ANALIZ 🧠</h1>
+  <h1>🌱 TARIM ANALİZ 🧠</h1>
   <h3>Yapay Zeka ve Derin Öğrenme Teknolojisi ile Bitki Koruma için Sürdürülebilir Çözüm</h3>
 </div>
 
