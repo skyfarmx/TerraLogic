@@ -1,7 +1,7 @@
-# Terra Logic
+# Tarim Analiz
 
 <div align="center">
-  <h1>🌱 TERRA LOGIC 🧠</h1>
+  <h1>🌱 TARIM ANALIZ 🧠</h1>
   <h3>Yapay Zeka ve Derin Öğrenme Teknolojisi ile Bitki Koruma için Sürdürülebilir Çözüm</h3>
 </div>
 
@@ -93,8 +93,8 @@ Terra Logic, modern teknolojilerin bir araya gelmesiyle oluşturulmuştur:
 
 1. **Repoyu klonlayın**
    ```bash
-   git clone https://github.com/kullaniciadi/terra-logic.git
-   cd terra-logic
+   git clone https://github.com/kullaniciadi/tarimanaliz.git
+   cd tarimanaliz
    ```
 
 2. **Sanal ortam oluşturun**
@@ -143,7 +143,7 @@ Terra Logic API'si, diğer sistemlerle entegrasyon için RESTful bir arayüz sun
 import requests
 
 # Görüntü analizi için örnek API çağrısı
-url = "https://api.terralogic.ai/v1/analyze"
+url = "https://api.tarimanaliz.com/v1/analyze"
 files = {"image": open("field_image.jpg", "rb")}
 response = requests.post(url, files=files)
 
@@ -153,7 +153,7 @@ print(results)
 
 ## 📚 API Dokümantasyonu
 
-API dokümantasyonuna [https://docs.terralogic.ai](https://docs.terralogic.ai) adresinden erişebilir veya sunucu çalışırken `http://localhost:8000/api/docs/` adresini ziyaret edebilirsiniz.
+API dokümantasyonuna [https://docs.terralogic.ai](https://docs.tarimanaliz.com) adresinden erişebilir veya sunucu çalışırken `http://localhost:8000/api/docs/` adresini ziyaret edebilirsiniz.
 
 ### Temel Endpoints
 
@@ -167,7 +167,7 @@ API dokümantasyonuna [https://docs.terralogic.ai](https://docs.terralogic.ai) a
 
 ## 👥 Katkıda Bulunma
 
-Terra Logic'e katkıda bulunmak için:
+Tarim Analiz'e katkıda bulunmak için:
 
 1. Bu repoyu forklayın
 2. Yeni bir branch oluşturun (`git checkout -b feature/amazing-feature`)
@@ -183,9 +183,9 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 ## 📬 İletişim
 
-Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@terralogic.ai) ve [Altug Tatlisu](mailto:altug.tatlisu@terralogic.ai)
+Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@tarimanaliz.com) ve [Altug Tatlisu](mailto:altug.tatlisu@tarimanaliz.com)
 
-Proje Sayfası: [https://www.terralogic.ai](https://www.terralogic.ai)
+Proje Sayfası: [https://www.terralogic.ai](https://www.tarimanaliz.com)
 
 ---
 
