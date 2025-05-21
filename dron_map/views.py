@@ -1,341 +1,383 @@
 from django.shortcuts import render
 from pathlib import Path
 from yolowebapp2 import histogram as hs
-import os,json,subprocess
+import os, json, subprocess
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from .forms import  Projects_Form #UserForm, UsersForm,
+from .forms import Projects_Form  # UserForm, UsersForm,
 from .models import Users, Projects
 from django.shortcuts import get_object_or_404
-from yolowebapp2 import predict_tree,hashing,tasknode,options
-BASE_DIR = Path(__file__).resolve().parent.parent
+from yolowebapp2 import predict_tree, hashing, tasknode, options
+TEMEL_DIZIN = Path(__file__).resolve().parent.parent
 from asgiref.sync import sync_to_async
 import asyncio
 import os
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
-
-def projects(request):
-    if request.user.is_authenticated:
-        userss = Users.objects.get(kat_id=request.user.id)
-        projes = Projects.objects.filter(kat_user__kat_id=request.user.id)
-        print(projes)
-        return render(request, "projects.html", {"userss": userss, "projes": projes})
-    else:
-        return render(request, "login.html",)
+def projeler(request):
+    """
+    Kullanıcıya ait projeleri listeler.
     
-
-
-
-
-def add_projects(request, slug=None, id=None):
+    Parametreler:
+    - request: HTTP isteği
+    
+    Dönüş:
+    - İşleme sonuçları içeren şablon
+    """
     if request.user.is_authenticated:
-        url = get_object_or_404(Users, kat_id=request.user.id)
-
-        if slug == "update" and id is not None:
-            projes = Projects.objects.get(id=id)
-            if request.method == 'POST':
-                form = Projects_Form(request.POST or None,
-                                     request.FILES or None, instance=projes)
-                print(form.is_valid(), form.errors)
-                if form.is_valid():
-                    form.picture = form.cleaned_data['picture']
-                    print(request.FILES)
-                    form.save()
-                return render(request, "add-projects.html", {'userss': url, "projes": projes})
-            else:
-                return render(request, "add-projects.html", {'userss': url, "projes": projes})
-
-        elif slug == "delete" and id is not None:
-            projes = Projects.objects.get(id=id).delete()
-            return redirect("dron_map:projects",)
-
-        elif slug == "add" and id is None:
-            if request.method == 'POST':
-                form = Projects_Form(request.POST or None,request.FILES or None)
-                Title= request.POST.get('Title')
-                Field= request.POST.get('Field')
-                print(form.is_valid(), form.errors,form)
-                if form.is_valid():
-                    
-                    hass = hashing.add_prefix(filename=f"{Title}{Field}")
-                    
-                    print(hass)               
-                    images_lists = request.FILES.getlist('picture') 
-                    form.picture = form.cleaned_data['picture']                    
-                    #form.hashing_path = f"{BASE_DIR}/static/results/{hass[1]}"
-                    form.instance.hashing_path = f"{hass[1]}"                  
-                    form.save()                
-                    for image in images_lists:                        
-                        fs = FileSystemStorage(location=str(hass[0]))                        
-                        saved_filename = fs.save(image.name, image)
-                    p = tasknode.Node_processing(f"{hass[0]}")
-                    p.download_task(f"{BASE_DIR}/static/results/{hass[1]}")
-                    print(p.get_uuid(),p.get_tasks(p.get_uuid()))
-                return render(request, "add-projects.html", {'userss': url, })
-            else:
-                return render(request, "add-projects.html", {'userss': url },)
-
+        try:
+            kullanici_profili = Users.objects.get(kat_id=request.user.id)
+            projeler_listesi = Projects.objects.filter(kat_user__kat_id=request.user.id)
+            print(projeler_listesi)
+            return render(request, "projects.html", {"kullanici_profili": kullanici_profili, "projeler_listesi": projeler_listesi})
+        except Users.DoesNotExist:
+            return render(request, "error.html", {"hata": "Kullanıcı profili bulunamadı"})
     else:
-        return render(request, "login.html",)
+        return render(request, "login.html")
 
-def task_path( id,path,file):        
+
+def proje_ekle(request, slug=None, id=None):
+    """
+    Proje ekleme, güncelleme veya silme işlemlerini yönetir.
+    
+    Parametreler:
+    - request: HTTP isteği
+    - slug: İşlem türü (add, update, delete)
+    - id: İşlem yapılacak proje ID'si
+    
+    Dönüş:
+    - İşleme sonuçları içeren şablon
+    """
+    if request.user.is_authenticated:
+        try:
+            kullanici_profili = get_object_or_404(Users, kat_id=request.user.id)
+
+            if slug == "update" and id is not None:
+                proje = Projects.objects.get(id=id)
+                if request.method == 'POST':
+                    form = Projects_Form(request.POST or None,
+                                        request.FILES or None, instance=proje)
+                    print(form.is_valid(), form.errors)
+                    if form.is_valid():
+                        form.picture = form.cleaned_data['picture']
+                        print(request.FILES)
+                        form.save()
+                    return render(request, "add-projects.html", {'kullanici_profili': kullanici_profili, "proje": proje})
+                else:
+                    return render(request, "add-projects.html", {'kullanici_profili': kullanici_profili, "proje": proje})
+
+            elif slug == "delete" and id is not None:
+                proje = Projects.objects.get(id=id).delete()
+                return redirect("dron_map:projeler")
+
+            elif slug == "add" and id is None:
+                if request.method == 'POST':
+                    form = Projects_Form(request.POST or None, request.FILES or None)
+                    baslik = request.POST.get('Title')
+                    alan = request.POST.get('Field')
+                    print(form.is_valid(), form.errors, form)
+                    
+                    if form.is_valid():
+                        try:
+                            hash_deger = hashing.add_prefix(filename=f"{baslik}{alan}")
+                            print(hash_deger)
+                            resim_listesi = request.FILES.getlist('picture')
+                            form.picture = form.cleaned_data['picture']
+                            form.instance.hashing_path = f"{hash_deger[1]}"
+                            form.save()
+                            
+                            for resim in resim_listesi:
+                                dosya_sistemi = FileSystemStorage(location=str(hash_deger[0]))
+                                kaydedilen_dosya_adi = dosya_sistemi.save(resim.name, resim)
+                                
+                            p = tasknode.Node_processing(f"{hash_deger[0]}")
+                            p.download_task(f"{TEMEL_DIZIN}/static/results/{hash_deger[1]}")
+                            print(p.get_uuid(), p.get_tasks(p.get_uuid()))
+                        except Exception as e:
+                            return render(request, "add-projects.html", {
+                                'kullanici_profili': kullanici_profili,
+                                'hata': f"Proje eklenirken hata oluştu: {str(e)}"
+                            })
+                            
+                    return render(request, "add-projects.html", {'kullanici_profili': kullanici_profili})
+                else:
+                    return render(request, "add-projects.html", {'kullanici_profili': kullanici_profili})
+        except Exception as e:
+            return render(request, "error.html", {"hata": f"İşlem sırasında hata oluştu: {str(e)}"})
+    else:
+        return render(request, "login.html")
+
+
+def gorev_yolu(id, path, file):
+    """
+    Göreve ait dosya yolunu döndürür.
+    
+    Parametreler:
+    - id: Proje kimliği
+    - path: Alt dizin yolu
+    - file: Dosya adı
+    
+    Dönüş:
+    - String: Dosya yolu
+    """
     return f'results/{id}/{path}/{file}'
 
-def get_full_task_path(id,path,file):
-    return os.path.join(BASE_DIR, f'static/results/{id}/{path}',file)
 
-def get_statistics(id,type):       
+def tam_gorev_yolu_al(id, path, file):
+    """
+    Göreve ait tam dosya yolunu döndürür.
+    
+    Parametreler:
+    - id: Proje kimliği
+    - path: Alt dizin yolu
+    - file: Dosya adı
+    
+    Dönüş:
+    - String: Tam dosya yolu
+    """
+    return os.path.join(TEMEL_DIZIN, f'static/results/{id}/{path}', file)
 
-    if type == "static":
-        task = get_full_task_path(id,"odm_report", "stats.json")
-        print("task",task)
-        if os.path.isfile(task):
+
+def istatistik_al(id, tur):
+    """
+    Proje istatistiklerini ve görüntü verilerini döndürür.
+    
+    Parametreler:
+    - id: Proje hash kimliği
+    - tur: İstenilen veri türü
+    
+    Dönüş:
+    - Dict: İstatistik verileri
+    """
+    if tur == "static":
+        gorev = tam_gorev_yolu_al(id, "odm_report", "stats.json")
+        print("gorev", gorev)
+        if os.path.isfile(gorev):
             try:
-                with open(task) as f:
+                with open(gorev) as f:
                     j = json.loads(f.read())
-            except Exception as e:                
+            except Exception as e:
                 return str(e)
-            return {'gsd': j.get('odm_processing_statistics', {}).get('average_gsd'),
-                    'area': j.get('processing_statistics', {}).get('area'),
-                    'date': j.get('processing_statistics', {}).get('date'),
-                    'end_date': j.get('processing_statistics', {}).get('end_date'),}
-        else:
-            return {}
-
-    elif type == "orthophoto" or type == "plant":
-        task = task_path(id,"odm_orthophoto", "odm_orthophoto.tif")
-        return {"odm_orthophoto":task}
-
-    elif type == "dsm" :
-        task = task_path(id,"odm_dem", "dsm.tif")
-        return {"dsm":task}
-
-    elif type == "dtm" :
-        task = task_path(id,"odm_dem", "dtm.tif")
-        return {"dtm":task}
-
-
-    elif type == "camera_shots":
-        task = task_path(id,"odm_report", "shots.geojson")
-        if os.path.isfile(task):
-            try:
-                with open(task) as f:
-                    j = json.loads(f.read())
-            except Exception as e:                
-                return str(e)
-            return {"camera_shots":j}
-        else:
-            return {}
-
-            
-    elif type == "images_info":
-        task = get_full_task_path(id,'/', 'images.json')
-        print(task,"images_info")
-        if os.path.exists(task):
-            try:
-                with open(task) as f:
-                    j = json.loads(f.read())
-            except Exception as e:                
-                return str(e)
-            return {'camera_model': j[0].get('camera_model'),
-                    'altitude':j[0].get('altitude'),
+            return {
+                'gsd': j.get('odm_processing_statistics', {}).get('average_gsd'),
+                'alan': j.get('processing_statistics', {}).get('area'),
+                'tarih': j.get('processing_statistics', {}).get('date'),
+                'bitis_tarihi': j.get('processing_statistics', {}).get('end_date'),
             }
         else:
             return {}
-        
 
+    elif tur == "orthophoto" or tur == "plant":
+        gorev = gorev_yolu(id, "odm_orthophoto", "odm_orthophoto.tif")
+        return {"odm_orthophoto": gorev}
 
-def convert(input_path,output_path):
-    from osgeo import gdal
-    dataset1 = gdal.Open(input_path)
-    projection = dataset1.GetProjection()
-    geotransform = dataset1.GetGeoTransform()
+    elif tur == "dsm":
+        gorev = gorev_yolu(id, "odm_dem", "dsm.tif")
+        return {"dsm": gorev}
 
+    elif tur == "dtm":
+        gorev = gorev_yolu(id, "odm_dem", "dtm.tif")
+        return {"dtm": gorev}
 
-    dataset2 = gdal.Open(output_path, gdal.GA_Update)
-    dataset2.SetGeoTransform( geotransform )
-    dataset2.SetProjection( projection )
-    dataset2.GetRasterBand(1).SetNoDataValue(0)
-
-
-def maping(request, id):
-    if request.user.is_authenticated:
-        userss = Users.objects.get(kat_id=request.user.id)
-        projes = Projects.objects.get(id=id)
-        algo = options.algorithm
-        colors = options.colormaps
-        if request.method == 'POST':
-            
-            orthophoto = get_statistics(id= projes.hashing_path,type="orthophoto")
-            static = get_statistics(id= projes.hashing_path,type="static")
-            images_info = get_statistics(id= projes.hashing_path,type="images_info")     
-            post_range = tuple(map(float,request.POST.getlist('range')))
-            post_range = (-abs(post_range[0]),abs(post_range[1]))
-            health_color = request.POST.get('health_color')
-            cmap = request.POST.get('cmap')
-
-            selected_algo = algo[health_color]
-            selected_colormap = colors[cmap]
-
-            
-
-            if health_color == "detect":
-                image_path = os.path.split(f'{BASE_DIR}/static/{projes.picture}')[-1]
-                image_path2 = f'detected/{image_path}'               
-                detec = predict_tree.preddict(path_to_weights="agac.pt",path_to_source=f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}') #subprocess.check_output(["python", path, "--weights", path_to_weights, "--conf", "0.1", "--img-size", "640","--view-img", "--no-trace", "--source", f'C:/Users/Murad/Documents/yolowebapp2/static/{projes.picture}', "--project", path_to_project, "--name", "detected"], timeout=600)
-                convert(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',f'{BASE_DIR}/static/detected/odm_orthophoto.tif')               
-                return render(request, "map.html", {"userss": userss, "orthophoto": {'path': f"detected/odm_orthophoto.tif",'colormap':cmap,'ranges':post_range,},"algo":algo,"colors":colors, "static":static,"images_info":images_info,"detection": detec[-5:-1].decode("utf-8")})
-
-            elif health_color == "ndvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ndvi = a.Ndvi(post_range,cmap)                      
-                return render(request, "map.html", {"userss": userss, "orthophoto": ndvi,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-
-            elif health_color == "gli":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                gli = a.Gli(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": gli,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-
-            elif health_color == "vari":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                vari = a.Vari(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": vari,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-
-            elif health_color == "vndvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                vndvi = a.VNDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": vndvi,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "ndyi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ndyi = a.NDYI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ndyi,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "ndre":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ndre = a.NDRE(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ndre,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "ndwi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ndwi = a.NDWI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ndwi,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "ndvi_blue":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ndvi_blue = a.NDVI_Blue(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ndvi_blue,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "endvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ENDVI = a.ENDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ENDVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "vndvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                VNDVI = a.VNDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": VNDVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "mpri":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                MPRI = a.MPRI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": MPRI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "exg":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                EXG = a.EXG(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": EXG,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "tgi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                TGI = a.TGI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": TGI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "bai":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                BAI = a.BAI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": BAI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "gndvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                GNDVI = a.GNDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": GNDVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "grvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                GRVI = a.GRVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": GRVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "savi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                SAVI = a.SAVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": SAVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "mnli":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                MNLI = a.MNLI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": MNLI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "msr":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                MSR = a.MSR(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": MSR,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            
-            elif health_color == "rdvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                RDVI = a.RDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": RDVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "tdvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                TDVI = a.TDVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": TDVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "osavi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                OSAVI = a.OSAVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": OSAVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-            elif health_color == "lai":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                LAI = a.LAI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": LAI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "evi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                EVI = a.EVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": EVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            elif health_color == "arvi":
-                a = hs.algos(f'{BASE_DIR}/static/{orthophoto["odm_orthophoto"]}',projes.hashing_path)
-                ARVI = a.ARVI(post_range,cmap)
-                return render(request, "map.html", {"userss": userss, "orthophoto": ARVI,"algo":algo,"colors":colors, "static":static,"images_info":images_info})
-            
-            
-           
+    elif tur == "camera_shots":
+        gorev = gorev_yolu(id, "odm_report", "shots.geojson")
+        if os.path.isfile(gorev):
+            try:
+                with open(gorev) as f:
+                    j = json.loads(f.read())
+            except Exception as e:
+                return str(e)
+            return {"camera_shots": j}
         else:
-            orthophoto = get_statistics(id= projes.hashing_path,type="orthophoto")
-            static = get_statistics(id= projes.hashing_path,type="static")
-            images_info = get_statistics(id= projes.hashing_path,type="images_info")
-            print("images_info",images_info)
-            return render(request, "map.html", {"userss": userss, "projes": projes,"orthophoto":orthophoto,"algo":algo,"colors":colors,"static":static,"images_info":images_info})
+            return {}
 
+    elif tur == "images_info":
+        gorev = tam_gorev_yolu_al(id, '/', 'images.json')
+        print(gorev, "images_info")
+        if os.path.exists(gorev):
+            try:
+                with open(gorev) as f:
+                    j = json.loads(f.read())
+            except Exception as e:
+                return str(e)
+            return {
+                'kamera_model': j[0].get('camera_model'),
+                'yukseklik': j[0].get('altitude'),
+            }
+        else:
+            return {}
+
+
+def donustur(giris_yolu, cikis_yolu):
+    """
+    Görüntülerin coğrafi referanslarını bir dosyadan diğerine aktarır.
+    
+    Parametreler:
+    - giris_yolu: Kaynak dosya yolu
+    - cikis_yolu: Hedef dosya yolu
+    """
+    try:
+        from osgeo import gdal
+        dataset1 = gdal.Open(giris_yolu)
+        projection = dataset1.GetProjection()
+        geotransform = dataset1.GetGeoTransform()
+
+        dataset2 = gdal.Open(cikis_yolu, gdal.GA_Update)
+        dataset2.SetGeoTransform(geotransform)
+        dataset2.SetProjection(projection)
+        dataset2.GetRasterBand(1).SetNoDataValue(0)
+    except Exception as e:
+        print(f"Dönüştürme hatası: {str(e)}")
+
+
+def haritalama(request, id):
+    """
+    Drone görüntülerini farklı vejetasyon indeksleriyle işleme ve haritalama.
+    
+    Parametreler:
+    - request: HTTP isteği
+    - id: Proje ID'si
+    
+    Dönüş:
+    - İşleme sonuçları içeren harita şablonu
+    """
+    if request.user.is_authenticated:
+        try:
+            kullanici_profili = Users.objects.get(kat_id=request.user.id)
+            proje = Projects.objects.get(id=id)
+            algoritmalar = options.algorithm
+            renkler = options.colormaps
+            
+            if request.method == 'POST':
+                try:
+                    orthophoto = istatistik_al(id=proje.hashing_path, tur="orthophoto")
+                    statik = istatistik_al(id=proje.hashing_path, tur="static")
+                    resim_bilgileri = istatistik_al(id=proje.hashing_path, tur="images_info")
+                    post_aralik = tuple(map(float, request.POST.getlist('range')))
+                    post_aralik = (-abs(post_aralik[0]), abs(post_aralik[1]))
+                    saglik_renk = request.POST.get('health_color')
+                    renk_haritasi = request.POST.get('cmap')
+
+                    secilen_algoritma = algoritmalar[saglik_renk]
+                    secilen_renk_haritasi = renkler[renk_haritasi]
+
+                    if saglik_renk == "detect":
+                        resim_yolu = os.path.split(f'{TEMEL_DIZIN}/static/{proje.picture}')[-1]
+                        resim_yolu2 = f'detected/{resim_yolu}'
+                        tespit = predict_tree.preddict(
+                            path_to_weights="agac.pt",
+                            path_to_source=f'{TEMEL_DIZIN}/static/{orthophoto["odm_orthophoto"]}'
+                        )
+                        donustur(
+                            f'{TEMEL_DIZIN}/static/{orthophoto["odm_orthophoto"]}',
+                            f'{TEMEL_DIZIN}/static/detected/odm_orthophoto.tif'
+                        )
+                        return render(request, "map.html", {
+                            "kullanici_profili": kullanici_profili,
+                            "orthophoto": {
+                                'path': f"detected/odm_orthophoto.tif",
+                                'colormap': renk_haritasi,
+                                'ranges': post_aralik,
+                            },
+                            "algoritmalar": algoritmalar,
+                            "renkler": renkler,
+                            "statik": statik,
+                            "resim_bilgileri": resim_bilgileri,
+                            "tespit": tespit[-5:-1].decode("utf-8")
+                        })
+                    else:
+                        # Vejetasyon indeksi hesaplamaları için algoritma çağrıları
+                        a = hs.algos(f'{TEMEL_DIZIN}/static/{orthophoto["odm_orthophoto"]}', proje.hashing_path)
+                        
+                        # Hangi algoritmanın seçildiğine göre uygun metot çağrılır
+                        if saglik_renk == "ndvi":
+                            sonuc = a.Ndvi(post_aralik, renk_haritasi)
+                        elif saglik_renk == "gli":
+                            sonuc = a.Gli(post_aralik, renk_haritasi)
+                        elif saglik_renk == "vari":
+                            sonuc = a.Vari(post_aralik, renk_haritasi)
+                        elif saglik_renk == "vndvi":
+                            sonuc = a.VNDVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "ndyi":
+                            sonuc = a.NDYI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "ndre":
+                            sonuc = a.NDRE(post_aralik, renk_haritasi)
+                        elif saglik_renk == "ndwi":
+                            sonuc = a.NDWI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "ndvi_blue":
+                            sonuc = a.NDVI_Blue(post_aralik, renk_haritasi)
+                        elif saglik_renk == "endvi":
+                            sonuc = a.ENDVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "mpri":
+                            sonuc = a.MPRI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "exg":
+                            sonuc = a.EXG(post_aralik, renk_haritasi)
+                        elif saglik_renk == "tgi":
+                            sonuc = a.TGI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "bai":
+                            sonuc = a.BAI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "gndvi":
+                            sonuc = a.GNDVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "grvi":
+                            sonuc = a.GRVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "savi":
+                            sonuc = a.SAVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "mnli":
+                            sonuc = a.MNLI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "msr":
+                            sonuc = a.MSR(post_aralik, renk_haritasi)
+                        elif saglik_renk == "rdvi":
+                            sonuc = a.RDVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "tdvi":
+                            sonuc = a.TDVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "osavi":
+                            sonuc = a.OSAVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "lai":
+                            sonuc = a.LAI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "evi":
+                            sonuc = a.EVI(post_aralik, renk_haritasi)
+                        elif saglik_renk == "arvi":
+                            sonuc = a.ARVI(post_aralik, renk_haritasi)
+                        else:
+                            # Eğer bilinmeyen bir algoritma seçildiyse
+                            return render(request, "map.html", {
+                                "kullanici_profili": kullanici_profili,
+                                "hata": "Geçersiz algoritma seçimi",
+                                "algoritmalar": algoritmalar,
+                                "renkler": renkler
+                            })
+                            
+                        return render(request, "map.html", {
+                            "kullanici_profili": kullanici_profili,
+                            "orthophoto": sonuc,
+                            "algoritmalar": algoritmalar,
+                            "renkler": renkler,
+                            "statik": statik,
+                            "resim_bilgileri": resim_bilgileri
+                        })
+                except Exception as e:
+                    return render(request, "map.html", {
+                        "kullanici_profili": kullanici_profili,
+                        "hata": f"İşlem sırasında hata oluştu: {str(e)}",
+                        "algoritmalar": algoritmalar,
+                        "renkler": renkler
+                    })
+            else:
+                orthophoto = istatistik_al(id=proje.hashing_path, tur="orthophoto")
+                statik = istatistik_al(id=proje.hashing_path, tur="static")
+                resim_bilgileri = istatistik_al(id=proje.hashing_path, tur="images_info")
+                print("resim_bilgileri", resim_bilgileri)
+                return render(request, "map.html", {
+                    "kullanici_profili": kullanici_profili,
+                    "proje": proje,
+                    "orthophoto": orthophoto,
+                    "algoritmalar": algoritmalar,
+                    "renkler": renkler,
+                    "statik": statik,
+                    "resim_bilgileri": resim_bilgileri
+                })
+        except Exception as e:
+            return render(request, "error.html", {"hata": f"Haritalama işlemi sırasında hata oluştu: {str(e)}"})
     else:
-        return render(request, "login.html",)
+        return render(request, "login.html")
