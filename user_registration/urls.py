@@ -1,22 +1,19 @@
 from django.urls import path, re_path
 
 from . import views
-app_name = 'user_registration'
-
+app_name = 'kullanici_kayit'
 
 
 urlpatterns = [
-   
-    re_path(r'user_pr/(?:id-(?P<id>[0-9]+)/)?$', views.user_pr, name='user_pr'),          
-    re_path(r'user_edit/(?:id-(?P<id>[0-9]+)/)?$', views.user_edit, name='user_edit'),          
-    path('logout', views.logout, name='logout'),
-    path('pricing', views.pricing, name='pricing'),
-    path('calendar', views.calendar, name='calendar'),
-    path('login', views.login, name='login'),      
-    path('login_view', views.login_view, name='login_view'),      
-    path('signup', views.signup, name='signup'),    
-    path('forgot_password', views.forgot_password, name='forgot_password'), 
-    path('pricing', views.pricing, name='pricing'),
-    path('calendar', views.calendar, name='calendar'),
+    re_path(r'kullanici_profil/(?:id-(?P<id>[0-9]+)/)?$', views.kullanici_profil, name='kullanici_profil'),          
+    re_path(r'kullanici_duzenle/(?:id-(?P<id>[0-9]+)/)?$', views.kullanici_duzenle, name='kullanici_duzenle'),          
+    path('cikis', views.cikis, name='cikis'),
+    path('fiyatlandirma', views.fiyatlandirma, name='fiyatlandirma'),
+    path('takvim', views.takvim, name='takvim'),
+    path('giris', views.giris, name='giris'),      
+    path('giris_yap', views.giris_yap, name='giris_yap'),      
+    path('kayit_ol', views.kayit_ol, name='kayit_ol'),    
+    path('sifremi_unuttum', views.sifremi_unuttum, name='sifremi_unuttum'), 
+    path('fiyatlandirma', views.fiyatlandirma, name='fiyatlandirma'),
+    path('takvim', views.takvim, name='takvim'),
 ]
-
