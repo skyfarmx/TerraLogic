@@ -1,54 +1,240 @@
-<div class="main-menu">
-	<header class="header">
-		<a href="{% url 'detection:index' %}" class="logo">CoreMeda</a>
-		<button type="button" class="button-close fa fa-times js__menu_close"></button>
-	</header>
-	<!-- /.header -->
-	<div class="content">
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terra Logic Menü - Tablar</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .nav-tabs .nav-link {
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .nav-tabs .nav-link.active {
+      background-color: #2c3e50;
+      color: white;
+    }
+    .tab-content {
+      margin-top: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(44, 62, 80, 0.1);
+      min-height: 300px;
+    }
+  </style>
+</head>
+<body>
 
-		<div class="navigation">
-			<ul class="menu js__accordion">
-				<li>
-					<a class="waves-effect" href="{% url 'detection:index' %}"><i class="menu-icon  fa-solid fa-house"></i><span>Dashboard</span></a>
-				</li>
-				<li>
-					<a class="waves-effect" href="{% url 'detection:multi_detection_image' %}"><i class="menu-icon  fa-solid fa-seedling"></i><span>Multi Counting Tree Image </span></a>
-				</li>
-				<li>
-					<a class="waves-effect" href="{% url 'user_registration:calendar' %}"><i class="menu-icon fa-solid fa-calendar"></i><span>Calendar</span></a>
-				</li>
-				<li>
-					<a class="waves-effect" href="{% url 'user_registration:pricing' %}"><i class="menu-icon fa-solid fa-shop"></i><span>Pricing</span></a>
-				</li>
-				<li>
-					<a class="waves-effect" href="{% url 'dron_map:projects' %}"><i class="menu-icon fa-sharp fa-regular fa-tractor"></i><span>Projects</span></a>
-				</li>
-				
-				<li class="">
-					<a class="waves-effect parent-item js__control" href="#"><i class="menu-icon  fa-solid fa-users"></i><span>Authentication</span><span class="menu-arrow fa fa-angle-down"></span></a>
-					<ul class="sub-menu js__content" style="display: none;">
-						<li>
-							<a class="waves-effect" href="{% url 'user_registration:login' %}"><i class="menu-icon fa-solid fa-user"></i><span>Login</span></a>
-						</li>
-						<li>
-							<a class="waves-effect" href="{% url 'user_registration:signup' %}"><i class="menu-icon fa-solid fa-key"></i><span>Signup</span></a>
-						</li>
-						<li>
-							<a class="waves-effect" href="{% url 'user_registration:forgot_password' %}"><i class="menu-icon fa-solid fa-lock"></i><span>Forgot Password</span></a>
-						</li>
-					</ul>
-					<!-- /.sub-menu js__content -->
-				</li>
-			</ul>
-			<!-- /.menu js__accordion -->
-		</div>
-		<!-- /.navigation -->
-	</div>
-	<!-- /.content -->
-</div>
-<!-- /.main-menu -->
+  <!-- Sekmeler (Tabs) -->
+  <ul class="nav nav-tabs" id="menuTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="dashboard-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#dashboard"
+        type="button"
+        role="tab"
+        aria-controls="dashboard"
+        aria-selected="true"
+      >
+        <i class="fa-solid fa-house"></i> Gösterge Paneli
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="multi-detection-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#multi-detection"
+        type="button"
+        role="tab"
+        aria-controls="multi-detection"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-seedling"></i> Çoklu Ağaç Sayımı
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="calendar-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#calendar"
+        type="button"
+        role="tab"
+        aria-controls="calendar"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-calendar"></i> Takvim
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="pricing-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#pricing"
+        type="button"
+        role="tab"
+        aria-controls="pricing"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-shop"></i> Fiyatlandırma
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="projects-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#projects"
+        type="button"
+        role="tab"
+        aria-controls="projects"
+        aria-selected="false"
+      >
+        <i class="fa-regular fa-tractor"></i> Projeler
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="auth-login-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#auth-login"
+        type="button"
+        role="tab"
+        aria-controls="auth-login"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-user"></i> Giriş Yap
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="auth-signup-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#auth-signup"
+        type="button"
+        role="tab"
+        aria-controls="auth-signup"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-key"></i> Kayıt Ol
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="auth-forgot-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#auth-forgot"
+        type="button"
+        role="tab"
+        aria-controls="auth-forgot"
+        aria-selected="false"
+      >
+        <i class="fa-solid fa-lock"></i> Şifremi Unuttum
+      </button>
+    </li>
+  </ul>
 
+  <!-- Tab içerikleri -->
+  <div class="tab-content" id="menuTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="dashboard"
+      role="tabpanel"
+      aria-labelledby="dashboard-tab"
+    >
+      <h3>Gösterge Paneli</h3>
+      <p>Gösterge paneli içeriği burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="multi-detection"
+      role="tabpanel"
+      aria-labelledby="multi-detection-tab"
+    >
+      <h3>Çoklu Ağaç Sayımı</h3>
+      <p>Çoklu ağaç sayımı ile ilgili içerik burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="calendar"
+      role="tabpanel"
+      aria-labelledby="calendar-tab"
+    >
+      <h3>Takvim</h3>
+      <p>Takvim ile ilgili içerik burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="pricing"
+      role="tabpanel"
+      aria-labelledby="pricing-tab"
+    >
+      <h3>Fiyatlandırma</h3>
+      <p>Fiyatlandırma ile ilgili içerik burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="projects"
+      role="tabpanel"
+      aria-labelledby="projects-tab"
+    >
+      <h3>Projeler</h3>
+      <p>Projeler ile ilgili içerik burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="auth-login"
+      role="tabpanel"
+      aria-labelledby="auth-login-tab"
+    >
+      <h3>Giriş Yap</h3>
+      <p>Giriş yap sayfası içeriği burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="auth-signup"
+      role="tabpanel"
+      aria-labelledby="auth-signup-tab"
+    >
+      <h3>Kayıt Ol</h3>
+      <p>Kayıt ol sayfası içeriği burada olacak.</p>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="auth-forgot"
+      role="tabpanel"
+      aria-labelledby="auth-forgot-tab"
+    >
+      <h3>Şifremi Unuttum</h3>
+      <p>Şifremi unuttum sayfası içeriği burada olacak.</p>
+    </div>
+  </div>
 
-
-
-
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
