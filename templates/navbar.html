@@ -1,25 +1,212 @@
-{% load static %}
-<div class="fixed-navbar">
-	<div class="float-left">
-		<button type="button" class="menu-mobile-button fas fa-bars js__menu_mobile"></button>
-		<h1 class="page-title">Yapay Zeka Modelli</h1>
-		<!-- /.page-title -->
-	</div>
-	<!-- /.float-left -->
-	<div class="float-right">
-		
-	
-		<div class="ico-item">
-			<img src="{% static picture %}" alt="" class="ico-img">
-			<ul class="sub-ico-item">
-				
-				<li><a href="{% url 'user_registration:user_pr' user.id %}">Settings {{user}}</a></li>
-				<li><a  href="{% url 'user_registration:logout' %}">Log Out</a></li>
-			</ul>
-			<!-- /.sub-ico-item -->
-		</div>
-		<!-- /.ico-item -->
-	</div>
-	<!-- /.float-right -->
-</div>
-<!-- /.fixed-navbar -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yapay Zeka Modelli - Navbar</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    /* Reset ve Temel Ayarlar */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    /* Navbar */
+    .fixed-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      height: 60px;
+      background: linear-gradient(90deg, #4e73df, #224abe);
+      color: #f9fafb;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    /* Sol Kısım */
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-mobile-button {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: #f9fafb;
+      cursor: pointer;
+      display: none; /* Mobilde açılırsa gösterilebilir */
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Sağ Kısım */
+    .right-section {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      position: relative;
+    }
+
+    .ico-item {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+      user-select: none;
+      position: relative;
+    }
+
+    .ico-item:hover,
+    .ico-item:focus {
+      background-color: rgba(255, 255, 255, 0.3);
+      outline: none;
+    }
+
+    .ico-item i.fa-user-circle {
+      font-size: 1.8rem;
+    }
+
+    /* Açılır Menü */
+    .sub-ico-item {
+      list-style: none;
+      margin: 0;
+      padding: 8px 0;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      width: 160px;
+      display: none;
+      z-index: 10;
+    }
+
+    .sub-ico-item li {
+      padding: 10px 20px;
+    }
+
+    .sub-ico-item li a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      display: block;
+      transition: background-color 0.2s ease;
+    }
+
+    .sub-ico-item li a:hover,
+    .sub-ico-item li a:focus {
+      background-color: #e7e7e7;
+      outline: none;
+    }
+
+    /* Açılır menüyü göstermek için aktif sınıf */
+    .ico-item.active .sub-ico-item {
+      display: block;
+    }
+
+    /* Responsive Mobil Menü Butonu Gösterimi */
+    @media (max-width: 768px) {
+      .menu-mobile-button {
+        display: inline-block;
+      }
+      .page-title {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="fixed-navbar" role="navigation" aria-label="Üst Navigasyon">
+  <div class="left-section">
+    <button 
+      type="button" 
+      class="menu-mobile-button fas fa-bars" 
+      aria-label="Menüyü Aç/Kapat"
+      aria-expanded="false"
+      aria-controls="sidebarMenu"
+      tabindex="0"
+    ></button>
+    <h1 class="page-title">Yapay Zeka Modelli</h1>
+  </div>
+  <div class="right-section">
+    <div 
+      class="ico-item" 
+      tabindex="0" 
+      aria-haspopup="true" 
+      aria-expanded="false" 
+      aria-label="Kullanıcı menüsü"
+      id="userMenuBtn"
+    >
+      <i class="fa-solid fa-user-circle"></i> Kullanıcı
+      <ul class="sub-ico-item" role="menu" aria-label="Kullanıcı seçenekleri" id="userSubMenu">
+        <li role="menuitem"><a href="settings.html" tabindex="-1">Ayarlar</a></li>
+        <li role="menuitem"><a href="logout.html" tabindex="-1">Çıkış Yap</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Kullanıcı menüsünü aç/kapat
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userSubMenu = document.getElementById('userSubMenu');
+
+  userMenuBtn.addEventListener('click', () => {
+    const isActive = userMenuBtn.classList.contains('active');
+    if (isActive) {
+      userMenuBtn.classList.remove('active');
+      userMenuBtn.setAttribute('aria-expanded', 'false');
+    } else {
+      userMenuBtn.classList.add('active');
+      userMenuBtn.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  // Menü dışına tıklanınca kapat
+  document.addEventListener('click', (e) => {
+    if (!userMenuBtn.contains(e.target)) {
+      userMenuBtn.classList.remove('active');
+      userMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Klavye erişilebilirliği için ESC ile kapatma
+  document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+      userMenuBtn.classList.remove('active');
+      userMenuBtn.setAttribute('aria-expanded', 'false');
+      userMenuBtn.focus();
+    }
+  });
+</script>
+
+</body>
+</html>
