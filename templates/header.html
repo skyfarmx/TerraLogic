@@ -1,95 +1,165 @@
-{% if user.is_authenticated %}
-  {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Meyve Resmini Yükle</title>
 
-	<title>Home Detect and count fruit in images
-</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-	<!-- Main Styles -->
-	<link rel="stylesheet" href="{% static 'assets/styles/style.min.css' %}">
-<link rel="stylesheet" href="{% static 'assets/styles/custom.css' %}">
-<link rel="stylesheet" href="{% static 'assets/styles/dataTables.bootstrap4.min.css' %}">
-	
-	<!-- Material Design Icon -->
-	<link rel="stylesheet" href="{% static 'assets/fonts/material-design/css/materialdesignicons.css' %}">
-<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <!-- Ana Stil -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-	<!-- mCustomScrollbar -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css' %}">
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-	<!-- Waves Effect -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/waves/waves.min.css' %}">
+        h1 {
+            font-size: 30px;
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
 
-	<!-- Sweet Alert -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/sweet-alert/sweetalert.css' %}">
-	
-	<!-- Percent Circle -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/percircle/css/percircle.css' %}">
+        .form-group {
+            margin-bottom: 25px;
+        }
 
-	<!-- Chartist Chart -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/chart/chartist/chartist.min.css' %}">
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
 
-	<!-- FullCalendar -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/fullcalendar/fullcalendar.min.css' %}">
-	<link rel="stylesheet" href="{% static 'assets/plugin/fullcalendar/fullcalendar.print.css' %}" media='print'>
-	<!-- Dropify -->
-	<link rel="stylesheet" href="{% static 'assets/plugin/dropify/css/dropify.min.css' %}">
-	
+        input[type="file"] {
+            display: none;
+        }
 
+        .custom-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 0 auto;
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+        }
 
-	<!-- Color Picker -->
-	<link rel="stylesheet" href="{% static 'assets/color-switcher/color-switcher.min.css' %}">
+        .custom-button:hover {
+            background-color: #45a049;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .custom-button, button[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-	      {% block body %}
-	      
-{%endblock%}
 
+    <div class="container">
+        <h1>Meyve Resmini Yükle ve Tespit Et</h1>
 
-<script src="{% static 'assets/scripts/jquery.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/scripts/modernizr.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/nprogress/nprogress.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/sweet-alert/sweetalert.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/waves/waves.min.js' %}" type="text/javascript"></script>
-<!-- Full Screen Plugin -->
-<script src="{% static 'assets/plugin/fullscreen/jquery.fullscreen-min.js' %}" type="text/javascript"></script>
+        <form action="submit_image_path" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Meyve Resmini Seç</label>
+                <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)">
+                <label for="file" class="custom-button">Resim Seç</label>
+            </div>
 
-<!-- Google Chart -->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <!-- Önizleme Bölümü -->
+            <div class="preview-container" id="preview-container">
+                <img id="output" alt="Resim Önizleme">
+            </div>
 
-<!-- chart.js Chart -->
+            <!-- Gönderme Butonu -->
+            <button type="submit">Resmi Gönder</button>
 
-<script src="{% static 'assets/scripts/chart.sparkline.init.min.js' %}" type="text/javascript"></script>
-<!-- FullCalendar -->
-<script src="{% static 'assets/plugin/moment/moment.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/plugin/fullcalendar/fullcalendar.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/scripts/fullcalendar.init.js' %}" type="text/javascript"></script>
+            <!-- Bilgilendirme Metni -->
+            <div class="info-text">
+                <p>Resminizi seçtikten sonra gönder butonuna basarak analiz için gönderin.</p>
+            </div>
+        </form>
+    </div>
 
-<!-- Sparkline Chart -->
-<script src="{% static 'assets/plugin/chart/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
-
-<script src="{% static 'assets/plugin/dropify/js/dropify.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/scripts/main.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/scripts/mycommon.js' %}" type="text/javascript"></script>
-
-<script src="{% static 'assets/scripts/jquery.dataTables.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'assets/scripts/datatables.demo.min.js' %}" type="text/javascript"></script>
-
-<script src="{% static 'assets/color-switcher/color-switcher.min.js' %}" type="text/javascript"></script>
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('output');
+                output.src = reader.result;
+                document.getElementById('preview-container').style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 
 </body>
-	</html>
-	{% else %}
-<p>Please login to see this page.</p>
-    {% endif %}
+</html>
