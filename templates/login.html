@@ -1,62 +1,94 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Giriş Yap</title>
 
-	<title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-<link rel="stylesheet" href="{% static 'assets/styles/style.min.css' %}">
-<link rel="stylesheet" href="{% static 'assets/styles/custom.css' %}">
-	<!-- Waves Effect -->
-
-	<link rel="stylesheet" href="{% static 'assets/plugin/waves/waves.min.css' %}">
+  <style>
+    body {
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .giris-karti {
+      max-width: 400px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    .baslik {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #0d6efd;
+    }
+    .footer-yazi {
+      font-size: 0.9rem;
+      color: #888;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="single-wrapper">
-	<form action="{% url 'user_registration:login_view' %}" method="post" class="frm-single">
-		{% csrf_token %}
-		<div class="inside">
-			<div class="title"><strong>Login </strong></div>
-			<!-- /.title -->
-			
-			<!-- /.frm-title -->
-			<div class="frm-input"><input type="text" name="username" placeholder="Username" class="frm-inp"><i class="fa fa-user frm-ico"></i></div>
-			<!-- /.frm-input -->
-			<div class="frm-input"><input type="password" name="password" placeholder="Password" class="frm-inp"><i class="fa fa-lock frm-ico"></i></div>
-			<!-- /.frm-input -->
-			<div class="clearfix margin-bottom-20">
-			
-				<!-- /.float-left -->
-				<div class="float-right"><a href="{% url 'user_registration:forgot_password' %}" class="a-link"><i class="fa fa-unlock-alt"></i>Forgot password?</a></div>
-				<!-- /.float-right -->
-			</div>
-			<!-- /.clearfix -->
-			<button type="submit" class="frm-submit">Login<i class="fa fa-arrow-circle-right"></i></button>
-			
-			<!-- /.row -->
-			<a href="{% url 'user_registration:signup' %}" class="a-link"><i class="fa fa-key"></i>Don't have an account ? Sign Up.</a>
-			<div class="frm-footer">Admin © 2023.</div>
-			<!-- /.footer -->
-		</div>
-		<!-- .inside -->
-	</form>
-	<!-- /.frm-single -->
+<div class="card giris-karti p-4">
+  <div class="baslik fs-4">
+    <i class="fa-solid fa-user-lock me-2"></i>Giriş Yap
+  </div>
+  <form id="girisFormu">
+    <div class="mb-3">
+      <label for="kullaniciadi" class="form-label">Kullanıcı Adı</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-user"></i></span>
+        <input type="text" class="form-control" id="kullaniciadi" placeholder="Kullanıcı adınızı girin" required />
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="sifre" class="form-label">Şifre</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input type="password" class="form-control" id="sifre" placeholder="Şifrenizi girin" required />
+      </div>
+    </div>
+    <div class="mb-3 text-end">
+      <a href="#" class="text-decoration-none small"><i class="fa fa-unlock-alt"></i> Şifremi unuttum</a>
+    </div>
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary">
+        Giriş Yap <i class="fa fa-arrow-right ms-2"></i>
+      </button>
+    </div>
+    <div class="text-center mt-3">
+      <a href="#" class="text-decoration-none">
+        <i class="fa fa-user-plus me-1"></i>Hesabınız yok mu? Kayıt Olun
+      </a>
+ 
 </div>
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="assets/scripts/jquery.min.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-	<script src="assets/scripts/modernizr.min.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-	<script src="assets/plugin/bootstrap/js/bootstrap.min.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-	<script src="assets/plugin/nprogress/nprogress.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-	<script src="assets/plugin/waves/waves.min.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
 
-	<script src="assets/scripts/main.min.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-<script src="assets/scripts/mycommon.js" type="c7238fc848d009e02302ef02-text/javascript"></script>
-<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="c7238fc848d009e02302ef02-|49" defer=""></script></body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.getElementById("girisFormu").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const kullanici = document.getElementById("kullaniciadi").value.trim();
+    const sifre = document.getElementById("sifre").value.trim();
+    if (kullanici && sifre) {
+      alert("Giriş başarılı:\nKullanıcı: " + kullanici + "\nŞifre: " + sifre);
+    } else {
+      alert("Lütfen tüm alanları doldurun.");
+    }
+  });
+</script>
+</body>
 </html>
