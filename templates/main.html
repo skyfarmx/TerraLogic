@@ -1,32 +1,170 @@
-{% extends 'header.html' %}
-{% block body %}
-      {% load static %}
-      {% include 'menu.html' %}
-      {% include 'navbar.html' with picture=userss.picture %}
-
-
-
-<div id="wrapper">
-      <div class="main-content">
-            <div class="row small-spacing">
-{% include 'form.html' %}
-
-
-{% include 'chart.html' %}
-
-{% if response != None %}
-
-{% include 'upload.html' with  image=response.image image_detection=response.image_detection%}
-{% include 'footer.html' with  kilo=response.kilo count=response.count toplam_ceki=response.toplam_ceki time=response.time  %}
-{% else %}
-
-
-
-{% include 'footer.html' %}
-{% endif %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand" href="#">Panel</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Menü</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="bg-light p-3 d-flex align-items-center">
+  <strong>Kullanıcı Adı</strong>
 </div>
-
+<div class="container my-4">
+  <div class="row g-4">
+    <div class="col-12">
+      <form>
+        <div class="mb-3">
+          <label class="form-label">Veri Girişi</label>
+          <input type="text" class="form-control" placeholder="Veri giriniz" />
+        </div>
+        <button type="submit" class="btn btn-primary">Gönder</button>
+      </form>
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Grafik</div>
+        <div class="card-body">
+          <canvas id="grafik"></canvas>
+        </div>
       </div>
-      <!-- /.main-content -->
-</div><!--/#wrapper -->
-{% endblock %}
+    </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Yüklenen Görsel</div>
+        <div class="card-body">
+          <div id="gorselAlani" class="d-none">
+            <img id="yuklenenGorsel" class="img-fluid mb-3" alt="Yüklenen Görsel" />
+            <p><strong>Tespit:</strong> <span id="tespitSonucu">-</span></p>
+          </div>
+          <div id="yuklemeMesaji" class="text-center py-4">
+            <p class="text-muted">Henüz görsel yüklenmedi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card text-center text-muted p-3">
+        <p id="istatistikAlani">Veri bekleniyor...</p>
+   </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Grafik oluşturma
+  const ctx = document.getElementById('grafik').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Ocak', 'Şubat', 'Mart'],
+      datasets: [{
+        label: 'Örnek Veri',
+        data: [10, 20, 15],
+        backgroundColor: '#0d6efd'
+      }]
+    }
+  });
+  
+  // Veri işleme ve görüntüleme
+  async function veriIsle(veriGirisi) {
+    try {
+      // Gerçek bir API çağrısı yapalım
+      const response = await fetch(`/api/analiz?veri=${encodeURIComponent(veriGirisi)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // API yanıt vermezse hata oluşturabiliriz
+      if (!response.ok) {
+        throw new Error('API yanıt vermedi');
+      }
+      
+      // Gerçek veri alınır
+      const data = await response.json();
+      
+      // Görsel ve tespit sonucu güncellenir
+      gorselYukle(data.gorselURL, data.tespitSonucu);
+      
+      // İstatistikler güncellenir
+      istatistikleriGuncelle(data.kilo, data.adet, data.toplamCeki, data.sure);
+      
+      // Grafik güncellenir
+      grafikGuncelle(data.grafikVerileri);
+      
+      return data;
+    } catch (error) {
+      console.error('Veri işlenirken hata oluştu:', error);
+      
+      // Hata durumunda kullanıcıya bilgi verilir
+      document.getElementById('yuklemeMesaji').innerHTML = 
+        '<p class="text-danger">Veri işlenirken bir hata oluştu. Lütfen tekrar deneyin.</p>';
+      
+      throw error;
+    }
+  }
+  
+  // Görsel yükleme işlevi
+  function gorselYukle(gorselURL, tespitMetni) {
+    // Görsel ve tespit sonucunu güncelle
+    document.getElementById('yuklenenGorsel').src = gorselURL;
+    document.getElementById('tespitSonucu').textContent = tespitMetni;
+    
+    // Görsel alanını göster, yükleme mesajını gizle
+    document.getElementById('gorselAlani').classList.remove('d-none');
+    document.getElementById('yuklemeMesaji').classList.add('d-none');
+  }
+  
+  // İstatistikleri güncelleme işlevi
+  function istatistikleriGuncelle(kilo, adet, toplamCeki, sure) {
+    const istatistikAlani = document.getElementById('istatistikAlani');
+    istatistikAlani.textContent = `Kilo: ${kilo}kg | Adet: ${adet} | Toplam Çeki: ${toplamCeki}kg | Süre: ${sure}sn`;
+  }
+  
+  // Grafiği güncelleme işlevi
+  function grafikGuncelle(grafikVerileri) {
+    if (grafikVerileri && grafikVerileri.labels && grafikVerileri.data) {
+      myChart.data.labels = grafikVerileri.labels;
+      myChart.data.datasets[0].data = grafikVerileri.data;
+      myChart.update();
+    }
+  }
+  
+  // Form gönderildiğinde veri işleme başlatılır
+  document.querySelector('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const veriGirisi = document.querySelector('input[type="text"]').value;
+    
+    if(veriGirisi.trim() !== '') {
+      // Form gönderildikten sonra girdi alanını temizle
+      document.querySelector('input[type="text"]').value = '';
+      
+      // Yükleme mesajını göster
+      document.getElementById('yuklemeMesaji').innerHTML = 
+        '<p class="text-info">Veri işleniyor, lütfen bekleyin...</p>';
+      
+      try {
+        // Veri işleme fonksiyonunu çağır
+        await veriIsle(veriGirisi);
+      } catch (error) {
+        // Hata işleme burada yapılabilir, zaten veriIsle içinde temel hata bilgisi gösteriliyor
+      }
+    }
+  });
+</script>
+</body>
+</html>
