@@ -185,7 +185,7 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 Proje Yöneticileri: [Murad Aliyev](mailto:murad.aliyev@tarimanaliz.com) ve [Altug Tatlisu](mailto:altug.tatlisu@tarimanaliz.com)
 
-Proje Sayfası: [https://www.terralogic.ai](https://www.tarimanaliz.com)
+Proje Sayfası: [https://www.tarimanaliz.com](https://www.tarimanaliz.com)
 
 ---
 
