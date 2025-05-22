@@ -1,97 +1,227 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title> <!-- Başlık kısmı kaldırıldı -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
 
-<script src="{% static 'stylesheets/multirange.css' %}" type="text/javascript"></script>
-<script src="{% static 'javascripts/multirange.js' %}" type="text/javascript"></script>
+    .content {
+      padding: 1rem;
+    }
 
+    .nav-tabs {
+      display: flex;
+      border-bottom: 2px solid #ddd;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 1rem;
+      padding-left: 0;
+      list-style: none;
+    }
 
-<div class="main-menu">
-	<header class="header">
-		<a href="{% url 'detection:index' %}" class="logo">CoreMeda</a>
-		<button type="button" class="button-close fa fa-times js__menu_close"></button>
-	</header>
-	<!-- /.header action="{{ request.path|urlencode }}" -->
-	<div class="content">
-        <form  method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-		<div class="navigation">
-			<ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#Imagedetails" role="tab" aria-controls="home" aria-selected="true"><i class="menu-icon fa-solid fa-leaf"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#Analysis" role="tab" aria-controls="profile" aria-selected="false"><i class="menu-icon fa-solid fa-chart-line"></i></a>
-                </li>
-				
-			</ul>
-			<!-- /.menu js__accordion -->
-            <div class="tab-content card white" id="myTabContent">
-                <div class="tab-pane fade active show" id="Imagedetails" role="tabpanel" aria-labelledby="home-tab">
-                    
+    .nav-item {
+      margin-right: 1rem;
+      flex: 0 0 auto;
+    }
 
-        <p>
-        <h2>Tiled Vegetation Index</h2>
-        <strong style='color:rgb(156, 158, 158);'>Average GSD:</strong><p>{{static.gsd}} cm</p>
-        <strong style='color:rgb(156, 158, 158);'>Area:</strong><p>{{static.area}} m&sup2;</p>
-        <strong style='color:rgb(156, 158, 158);'>Date Created on:</strong><p>{{static.date}}</p>
-        <strong style='color:rgb(156, 158, 158);'>Camera:</strong><p>{{images_info.camera_model}}</p>
-        <strong style='color:rgb(156, 158, 158);'>Altitude:</strong><p>{{images_info.altitude}}</p>
-        {% if orthophoto.ranges is not None %}
-        <strong style='color:rgb(156, 158, 158);'>Detection:</strong><p style='color:red;font-weight: bold;'>{{detection}}</p>
-        {% endif %}
-        </p>
-                </div>
-                <div class="tab-pane fade " id="Analysis" role="tabpanel" aria-labelledby="profile-tab">
-                    
-                    <label>Histogram Chart</label>
-                    <!-- Add a slider -->
-                   
-                    {% if orthophoto.ranges is not None %}
-                  <input type="range" id="myRange" name="range" multiple  max="1" min="-1" step="0.001" />
-                  <p>Value: {{orthophoto.ranges}}<span id="demo"></span></p>
-                  {% else %}
-                  <input type="range" name="range" multiple  max="1" min="-1" step="0.001" id="myRange"/>
-                  <p>Value: <span id="demo"></span></p>
-                  {% endif %}
-                  
-                    <p>
-                        
-                        
-                        <label for="base">Algorithm:</label>
-                        <select class="form-control" name="health_color" id="base">                        
-                            {% for key,values in algo.items %}
-                            
-                                {{values|safe}}
-                            
-                            {% endfor %}
+    .nav-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      color: #007bff;
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+      cursor: pointer;
+      font-size: 1.2rem;
+      text-align: center;
+    }
 
-                        </select>
-                    </p>
-                    <p><label for="base">Colors:</label>
-                        <select class="form-control" name="cmap">
-                            {% for color in colors.items %}
-                                {{color|safe}}
-                            {% endfor %}
-                        </select>
-                        </p>
-                   <p><button name="checked" type="submit" class="btn btn-primary btn-sm waves-effect waves-light">Check</button></p>
-                                    </div>
-            </div>
-            
-        
-		</div>
-		<!-- /.navigation -->
-	</div>
-</form>
-	<!-- /.content -->
-</div>
-<!-- /.main-menu -->
+    .nav-link.active,
+    .nav-link:hover {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff #007bff #fff;
+    }
 
-<script>
+    .tab-content {
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+      min-height: 200px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    p strong {
+      color: #9c9e9e;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .nav-link {
+        font-size: 1rem;
+        padding: 0.4rem 0.6rem;
+      }
+      .tab-content {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <form method="post" enctype="multipart/form-data">
+      <ul class="nav-tabs" role="tablist" id="myTab">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="home-tab"
+            href="#Imagedetails"
+            role="tab"
+            aria-controls="Imagedetails"
+            aria-selected="true"
+            >&#127810;</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="profile-tab"
+            href="#Analysis"
+            role="tab"
+            aria-controls="Analysis"
+            aria-selected="false"
+            >&#128200;</a
+          >
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="Imagedetails"
+          role="tabpanel"
+          aria-labelledby="home-tab"
+        >
+          <h2>Tiled Vegetation Index</h2>
+
+          <p><strong>Ortalama GSD:</strong> <span id="gsd">-</span> cm</p>
+          <p><strong>Alan:</strong> <span id="area">-</span> m&sup2;</p>
+          <p><strong>Oluşturulma Tarihi:</strong> <span id="date">-</span></p>
+          <p><strong>Kamera:</strong> <span id="camera_model">-</span></p>
+          <p><strong>Yükseklik:</strong> <span id="altitude">-</span></p>
+          <p><strong>Deteksiyon:</strong> <span id="detection" style="color:red; font-weight:bold;">-</span></p>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="Analysis"
+          role="tabpanel"
+          aria-labelledby="profile-tab"
+        >
+          <label for="myRange">Histogram Grafiği</label>
+          <input
+            type="range"
+            id="myRange"
+            name="range"
+            max="1"
+            min="-1"
+            step="0.001"
+            multiple
+          />
+          <p>
+            Değer:
+            <span id="demo"></span>
+          </p>
+
+          <label for="base">Algoritma:</label>
+          <select class="form-control" name="health_color" id="base">
+            <option value="">Seçiniz</option>
+          </select>
+
+          <label for="colors">Renkler:</label>
+          <select class="form-control" name="cmap" id="colors">
+            <option value="">Seçiniz</option>
+          </select>
+
+          <button type="submit" name="checked" class="btn btn-primary btn-sm">
+            Kontrol Et
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.querySelectorAll(".nav-link").forEach((tabLink) => {
+      tabLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.querySelectorAll(".nav-link").forEach((el) =>
+          el.classList.remove("active")
+        );
+        document.querySelectorAll(".tab-pane").forEach((el) =>
+          el.classList.remove("show", "active")
+        );
+        this.classList.add("active");
+        const selector = this.getAttribute("href");
+        document.querySelector(selector).classList.add("show", "active");
+      });
+    });
+
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
     output.innerHTML = slider.value;
-    
-    slider.oninput = function() {
+
+    slider.oninput = function () {
       output.innerHTML = this.value;
-    }
-    </script> 
+    };
+  </script>
+</body>
+</html>
