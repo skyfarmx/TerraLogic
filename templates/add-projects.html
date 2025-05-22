@@ -1,96 +1,57 @@
-{% extends 'header.html' %}
-{% block body %}
-      {% load static %}
-      {% include 'menu.html' %}
-      {% include 'navbar.html' with picture=userss.picture %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Ekle</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
 
-      <div id="wrapper">
-        <div class="main-content">
-              <div class="row small-spacing">
-
-                <div class="col-xl-12 col-12">
-                    <div class="box-content card white">
-                        <h4 class="box-title">Basic example </h4>
-                        <!-- /.box-title -->
-                        <div class="card-content">
-                            {% if userss != None %}
-                            
-                            <form action="{{ request.path|urlencode }}" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Farm</label>
-                                    <input type="text" placeholder="Farm" name="Farm" class="form-control" value="{% if projes != None %}{{projes.Farm}} {% endif %}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Field</label>
-                                    <input type="text" placeholder="Field" name="Field" class="form-control" value="{% if projes != None %}{{projes.Field}} {% endif %}">
-                                    <input type="hidden" name="kat_user" class="form-control" value="{{userss.id}}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Title</label>
-                                    <input type="text" placeholder="Title" name="Title" class="form-control" value="{% if projes != None %}{{projes.Title}} {% endif %}">
-                                </div>
-                               
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">State</label>
-                                    <input type="text" placeholder="State" name="State" class="form-control" value="{% if projes != None %}{{projes.State}} {% endif %}">
-                                </div>
-                               
-                                 <input type="hidden" id="hashing_path" name="hashing_path" value="0">
-                                <div class="form-group">
-                                    <label for="exampleInputFile" class="btn btn-default"> Resmini seç <i class="ico fa-solid fa-image"></i></label>
-								<input id="exampleInputFile"style="display: none" type="file" name="picture" accept="image/*" onchange="loadFile(event)" multiple>
-                                    {% load static %}
-								
-								<div class="col-lg-3 col-6"> 
-								
-									<img id="output" src="{% if projes != None %}{% static projes.picture %} {% endif %}">
-								
-							</div>
-                                </div>
-                             
-                                <button type="submit" class="btn btn-primary btn-sm waves-effect waves-light">Submit</button>
-                            </form>
-                        </div>
-                        {% endif %}
-                        <!-- /.card-content -->
-                    </div>
-                    <!-- /.box-content -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Proje Bilgilerini Girin</h4>
                 </div>
-
-
-
-
-
-
-
-
-<script>
-    var loadFile = function(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-        var output = document.getElementById('output');
-        output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    };
-</script>
-
-
-
-
-
-
-              </div>
-              <!-- /.box-content card -->
-          </div>
-
-
-
-
+                <div class="card-body">
+                    <form action="#" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Çiftlik</label>
+                            <input type="text" name="Farm" class="form-control" placeholder="Çiftlik adı">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alan</label>
+                            <input type="text" name="Field" class="form-control" placeholder="Alan adı">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Başlık</label>
+                            <input type="text" name="Title" class="form-control" placeholder="Başlık">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Durum</label>
+                            <input type="text" name="State" class="form-control" placeholder="Durum">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Resim Seç</label>
+                            <input type="file" class="form-control" name="picture" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-</div>
-<!-- /.main-content -->
-</div><!--/#wrapper -->
-{% endblock %}
+</body>
+</html>
